@@ -179,19 +179,30 @@ effective measures on prevention, on the protection of victims, and on access to
 remedies including compensation. It entered into force in November 2016.
 
 4.2 To help identify forced labour in practice, the ILO publishes a set of
-eleven indicators of forced labour. They include abuse of vulnerability,
-deception, restriction of movement, retention of identity documents, withholding
-of wages, and debt bondage. The ILO describes their purpose as assisting law
-enforcement officials, labour inspectors, trade union officers, and
-non-governmental organisation staff to identify people who may be trapped in
-forced labour and may need urgent help. These are operational indicators for
-recognising a case in front of you. FLSRI works
-at a different level: it measures the standing country conditions that make
-those case-level indicators more likely to arise, and its documentation states
-that its domain set is broadly aligned with these indicators and with the
-vulnerability dimensions used in the Walk Free Global Slavery Index.
+eleven indicators of forced labour, first issued in 2012 and reissued in a
+revised edition in 2025. The eleven are abuse of vulnerability, deception,
+restriction of movement, isolation, physical and sexual violence, intimidation
+and threats, retention of identity documents, withholding of wages, debt
+bondage, abusive working and living conditions, and excessive overtime. The ILO
+describes their purpose as assisting law enforcement officials, labour
+inspectors, trade union officers, and non-governmental organisation staff to
+identify people who may be trapped in forced labour and may need urgent help.
 
-4.3 The obligation is not only a state obligation. The United Nations Guiding
+4.3 The ILO is careful about how much weight any one indicator carries. Its
+guidance states that the presence of a single indicator may in some cases imply
+the existence of forced labour, while in other cases several indicators must be
+read together before a case can be said to exist. The eleven are a screening
+aid for practitioners, not a legal test, and they are frequently over-read as a
+checklist. That caution matters for an index built on the same vocabulary.
+
+4.4 These are operational indicators for recognising a case in front of you.
+FLSRI works at a different level: it measures the standing country conditions
+that make those case-level indicators more likely to arise, and its
+documentation states that its domain set is broadly aligned with these
+indicators and with the vulnerability dimensions used in the Walk Free Global
+Slavery Index.
+
+4.5 The obligation is not only a state obligation. The United Nations Guiding
 Principles on Business and Human Rights, endorsed by the UN Human Rights Council
 in 2011, rest on three pillars: the state duty to protect human rights, the
 corporate responsibility to respect them, and access to remedy for those harmed.
@@ -202,7 +213,7 @@ structural risk measure is directly relevant to that first step: an enterprise
 or a public procurement body cannot prioritise due diligence without some
 defensible view of where risk is concentrated.
 
-4.4 Target 8.7 of the Sustainable Development Goals commits states to take
+4.6 Target 8.7 of the Sustainable Development Goals commits states to take
 immediate and effective measures to eradicate forced labour, end modern slavery
 and human trafficking, and secure the prohibition and elimination of the worst
 forms of child labour. Two of the index's own indicators are drawn directly from
@@ -210,7 +221,7 @@ the SDG monitoring framework: informal employment as a share of total employment
 (SDG indicator 8.3.1) and the completeness of birth registration (SDG indicator
 16.9.1).
 
-4.5 The index does not claim to establish a violation of any of these
+4.7 The index does not claim to establish a violation of any of these
 instruments, and it should not be cited as evidence that a particular state is
 in breach of its obligations. It is a prioritisation instrument for prevention,
 not a compliance finding.
