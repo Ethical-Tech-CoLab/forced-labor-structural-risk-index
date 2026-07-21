@@ -1,5 +1,8 @@
 # Forced Labor Structural Risk Index (FLSRI)
 
+**[Live site](https://ethical-tech-colab.github.io/forced-labor-structural-risk-index/)** ·
+**[Research report](FLSRI-Paper.md)** (plain-language, non-technical)
+
 A country-level index, scored 0–1, of the **structural conditions** under which
 forced labor becomes more likely. It is **not** a count or estimate of cases — it
 measures the conditions that enable them. ~195 countries are organized as
