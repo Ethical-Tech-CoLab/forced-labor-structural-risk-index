@@ -16,15 +16,29 @@ def geometric_mean(values):
     """Equal-weight geometric mean of a list of non-None values in [0,1].
 
     Returns None if any value is missing (conjunctive spine: both phases are
-    separately necessary, so a missing phase -> not-scored, not zero)."""
+    separately necessary, so a missing phase -> not-scored, not zero).
+
+    Inputs are VALIDATED, not clamped. A phase score outside [0,1] (or NaN)
+    means an upstream aggregation bug; silently coercing a negative to 0.0
+    used to annihilate the whole product and then rank that country as LOWEST
+    risk, with no trace. Raise instead so the bug surfaces at build time.
+
+    Note: a phase score of exactly 0.0 still annihilates the product by
+    design -- locked rule 7 keeps the soft-conjunctive spine with no baseline
+    floor, and run.py reports composite == 0.0 as a build anomaly. That is an
+    index-math decision and is deliberately unchanged here."""
     vals = [v for v in values if v is not None]
     if len(vals) != len(values) or not vals:
         return None
-    # geometric mean of values that may legitimately be 0.0; product form is
-    # exact and fine for two factors.
     prod = 1.0
     for v in vals:
-        prod *= max(0.0, v)
+        if not isinstance(v, (int, float)) or math.isnan(v) or not (0.0 <= v <= 1.0):
+            raise ValueError(
+                f"phase score {v!r} is not a finite value in [0,1]; "
+                "phase scores are 0-1 anchored by construction, so this is an "
+                "upstream aggregation bug (do not clamp -- fix the source)"
+            )
+        prod *= v
     return prod ** (1.0 / len(vals))
 
 

@@ -107,6 +107,22 @@ def _load_config():
         return yaml.safe_load(fh)
 
 
+def _ssl_context() -> ssl.SSLContext:
+    """Verified TLS context, same construction as pipeline/sources/worldbank.py.
+
+    certifi (a pinned requirement) supplies the CA bundle when the local system
+    trust store is incomplete. Certificate verification is NEVER disabled here:
+    the fetched CSV is written to data/aux/epr_core_raw.csv and becomes the
+    byte-checked offline pin for every later build, so an unverified connection
+    would let a network attacker seed the trusted input of the whole index.
+    """
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
 def _fetch_raw(url):
     """Return the EPR Core CSV text, caching to data/aux for offline re-runs."""
     if CACHE_PATH.exists():
@@ -114,25 +130,21 @@ def _fetch_raw(url):
         return CACHE_PATH.read_text(encoding="utf-8")
     print(f"[epr] downloading {url}")
     req = urllib.request.Request(url, headers={"User-Agent": "FLSRI-data/1.0"})
-    # Verified context first; fall back to certifi, then to an UNVERIFIED
-    # context (some macOS Python builds ship without the system CA bundle).
-    # The cache (seeded via curl) is the normal path, so this is a backstop.
+    ctx = _ssl_context()
     try:
-        ctx = ssl.create_default_context()
         with urllib.request.urlopen(req, timeout=60, context=ctx) as resp:
             text = resp.read().decode("utf-8")
-    except ssl.SSLError:
-        try:
-            import certifi
-            ctx = ssl.create_default_context(cafile=certifi.where())
-            with urllib.request.urlopen(req, timeout=60, context=ctx) as resp:
-                text = resp.read().decode("utf-8")
-        except Exception:
-            print("[epr] WARN: TLS verification failed; retrying UNVERIFIED "
-                  "(seed data/aux/epr_core_raw.csv via curl to avoid this)")
-            ctx = ssl._create_unverified_context()
-            with urllib.request.urlopen(req, timeout=60, context=ctx) as resp:
-                text = resp.read().decode("utf-8")
+    except ssl.SSLError as e:
+        # Fail loudly; do NOT fall back to an unverified context and then cache
+        # the result as the offline reproducibility pin.
+        raise RuntimeError(
+            f"TLS verification failed fetching {url}: {e}. "
+            "Install/refresh certifi (`pip install -U certifi`) or fix the "
+            "system trust store, or seed the cache yourself over verified TLS: "
+            f"curl -o {CACHE_PATH} '{url}'. Certificate verification is "
+            "required: this response is cached as the offline pin for all "
+            "future builds."
+        ) from e
     CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
     CACHE_PATH.write_text(text, encoding="utf-8")
     print(f"[epr] cached raw -> {CACHE_PATH}")
