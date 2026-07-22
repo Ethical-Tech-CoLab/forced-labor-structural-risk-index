@@ -33,13 +33,40 @@ import urllib.request, json, ssl, csv, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
-CTX = ssl._create_unverified_context()  # WB open data over https; local trust store lacks the issuer
+
+
+def _ssl_context() -> ssl.SSLContext:
+    """Verified TLS context, same construction as pipeline/sources/worldbank.py.
+
+    certifi (a pinned requirement) supplies the CA bundle when the local system
+    trust store is incomplete. Certificate verification is NEVER disabled here:
+    this fetch is patched straight into the published public/data/overlay.json,
+    so an unverified connection would let a network attacker write arbitrary
+    values into a published dataset.
+    """
+    try:
+        import certifi
+        return ssl.create_default_context(cafile=certifi.where())
+    except ImportError:
+        return ssl.create_default_context()
+
+
+CTX = _ssl_context()
 
 
 def fetch(ind):
     url = f"https://api.worldbank.org/v2/country/all/indicator/{ind}?format=json&per_page=400&mrnev=1"
-    with urllib.request.urlopen(url, timeout=40, context=CTX) as r:
-        d = json.load(r)
+    try:
+        with urllib.request.urlopen(url, timeout=40, context=CTX) as r:
+            d = json.load(r)
+    except ssl.SSLError as e:
+        # Fail loudly; do NOT fall back to an unverified context.
+        raise RuntimeError(
+            f"TLS verification failed fetching {url}: {e}. "
+            "Install/refresh certifi (`pip install -U certifi`) or fix the system "
+            "trust store. Certificate verification is required: this data is "
+            "written into the published overlay.json."
+        ) from e
     out = {}
     for x in d[1]:
         c, v = x.get("countryiso3code"), x.get("value")
