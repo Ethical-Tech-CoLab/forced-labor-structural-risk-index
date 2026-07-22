@@ -67,11 +67,32 @@ def fetch(ind):
             "trust store. Certificate verification is required: this data is "
             "written into the published overlay.json."
         ) from e
+    # Validate the envelope before indexing. A World Bank error or an empty page
+    # comes back as a 1-element list ([{"message": [...]}]) or a bare dict, which
+    # would raise IndexError/TypeError here and abort the post-process halfway
+    # through rewriting the published overlay.json. Fail with a readable message
+    # instead, before anything is written.
+    if not isinstance(d, list) or len(d) < 2:
+        detail = ""
+        if isinstance(d, list) and d and isinstance(d[0], dict) and d[0].get("message"):
+            detail = f" API message: {d[0]['message']}"
+        raise RuntimeError(f"World Bank API returned no data page for {ind} ({url}).{detail}")
+    header, page = d[0], d[1]
+    if not isinstance(page, list) or not page:
+        total = header.get("total") if isinstance(header, dict) else None
+        raise RuntimeError(
+            f"World Bank API returned an empty data page for {ind} ({url}); total={total}"
+        )
+
     out = {}
-    for x in d[1]:
+    for x in page:
+        if not isinstance(x, dict):
+            continue
         c, v = x.get("countryiso3code"), x.get("value")
         if c and v is not None:
             out[c] = (float(v), x["date"])
+    if not out:
+        raise RuntimeError(f"World Bank API returned no usable observations for {ind} ({url})")
     return out
 
 

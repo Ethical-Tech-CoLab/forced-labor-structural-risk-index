@@ -251,7 +251,7 @@ def relative_scale(raw_by_iso3, spec, method="winsor_minmax", winsor=0.05,
 
     method:
       "winsor_minmax" : winsorize at the `winsor`/1-`winsor` quantiles, then min-max.
-      "percentile"    : percentile rank across present values.
+      "percentile"    : tie-aware (average-rank) percentile across present values.
 
     Records a relative-fallback flag automatically (per Rule 1). Direction
     applied via spec. Coverage computed against `sample` (defaults to keys).
@@ -270,13 +270,22 @@ def relative_scale(raw_by_iso3, spec, method="winsor_minmax", winsor=0.05,
     if present_vals:
         if method == "percentile":
             n = len(present_vals)
-            rank = {}
-            for i, v in enumerate(present_vals):
-                rank.setdefault(v, i)
+            # Tie-aware (average-rank) percentile. Tied values share one score,
+            # and that score is the mean of the 1-based ranks they occupy, so an
+            # all-tied sample lands mid-scale instead of at 0.0 and a unique max
+            # reaches 1.0. Built in one sweep over the already-sorted values
+            # (the previous form rescanned the whole list per item -> O(n^2)).
+            pct_by_val = {}
+            i = 0
+            while i < n:
+                j = i
+                while j < n and present_vals[j] == present_vals[i]:
+                    j += 1
+                mean_rank = (i + 1 + j) / 2.0          # mean of ranks i+1 .. j
+                pct_by_val[present_vals[i]] = (mean_rank - 1) / (n - 1) if n > 1 else 0.0
+                i = j
             for iso3, v in present_items:
-                # fraction of values strictly below + ties handled by position
-                below = sum(1 for x in present_vals if x < v)
-                s = below / (n - 1) if n > 1 else 0.0
+                s = pct_by_val[v]
                 scores[iso3] = 1.0 - s if invert else s
         else:  # winsor_minmax
             lo = _quantile(present_vals, winsor)
