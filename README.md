@@ -106,3 +106,19 @@ reference build (a 13-domain reproducibility harness kept separate from the
 
 The full statement is on the site's
 [Limitations page](public/pages/limitations.html).
+
+---
+
+## Peer Review
+
+The full independent academic peer review of this report is in [PEER-REVIEW.md](PEER-REVIEW.md) (also available as [Word](peer-review/forced-labor-structural-risk-index-Peer-Review.docx) under [`peer-review/`](peer-review/)).
+
+**Recommendation:** Major revisions
+
+**What the review found:**
+
+- The flagship geometric-mean claim (S14.2, S5.4) rests on an Exploitation phase the paper itself concedes does not measure its construct and that carries ~2.7x weight per domain (S6.2).
+- The "not just governance" defence (S7.4) leans on a test the project's own validation labels non-dispositive, while the only external prevalence test returned null (S10.2-S10.3).
+- The index is stable only at already-obvious extremes and unreadable in the mid-table where its triage use case would add value (S8, S13.2).
+
+**Noted strength:** Exemplary measurement honesty: pre-registered validation that reports its own failed criterion (S10.3), no-imputation discipline (S5.7), and uncertainty bands wide enough to embarrass the ranking.
