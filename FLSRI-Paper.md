@@ -785,6 +785,62 @@ are stable. They do not validate any individual country's score.
 The project's credibility rests substantially on the candour of this list, which
 is reproduced here in the terms the repository itself uses.
 
+> ### 11.0 Erratum: two defects in the composite, measured against the published data
+>
+> The peer review's first major finding concerns the leverage the Exploitation
+> phase holds over every score. Testing that against the published
+> `public/data/domains.json` confirmed the concern, and surfaced a second,
+> more damaging defect the review did not reach. **No scores have been changed;
+> both are recorded here so no published figure is read as sound.**
+>
+> **(a) The Exploitation phase carries disproportionate per-domain weight, but
+> less influence overall than the arithmetic implies.** With eight domains in
+> Recruitment against three in Exploitation, and the two phases entering the
+> geometric mean equally, each E domain carries **2.67x** the marginal weight of
+> an R domain -- the review's figure is exactly right. Empirically, however,
+> across the 140 countries where both phases are non-zero, E accounts for about
+> **23%** of the composite's log-variance (var(log R) = 0.497 against
+> var(log E) = 0.152), and the composite tracks R more tightly than E
+> (corr(log R, log C) = 0.952 versus corr(log E, log C) = 0.832). The two phases
+> correlate at r = 0.62.
+>
+> The consequence is not that E dominates the ranking. It is that E is doing a
+> smaller share of the work than the conjunctive design advertises, while each
+> of its three domains individually carries outsized weight -- and, on the
+> paper's own account (6.2.1, 6.2.3), those domains are the least validly
+> measured in the index. The claim at 14.2 that "a country scores high only
+> where both an exposed population and an unchecked environment are present"
+> should therefore be read with the caveat that "unchecked environment" is
+> operationally close to labour-institution weakness plus corruption.
+>
+> **(b) The geometric mean has no floor, so a single zero indicator annihilates
+> a country's entire score.** This is the more serious defect. **51 of 191
+> countries carry a composite of exactly 0.0**, including Somalia, Haiti, Mali,
+> Burkina Faso, Cameroon, Sierra Leone, North Korea, Cuba and Tunisia alongside
+> Germany, Sweden, Norway and the United States.
+>
+> The cause is traced: the `ascriptive-exclusion` domain scores exactly 0.0 for
+> **48 countries** and `legal-non-recognition` for **7**. Because a phase score
+> is the geometric mean of its domains, one zero domain sets that phase to zero;
+> because the composite is the geometric mean of the two phases, the whole score
+> follows.
+>
+> The zero is not missing data. `epr_excluded_pop_share` genuinely reads 0.0 in
+> the Ethnic Power Relations source for those countries -- a coding outcome
+> meaning no politically excluded ethnic group under EPR's definition. For
+> Germany that is defensible. For Somalia, where clan-based political exclusion
+> is central to the country's conflict, it is a limitation of EPR's coding
+> frame rather than a fact about exclusion, and it should never have been able
+> to zero the country's forced-labour risk score on its own.
+>
+> **Until this is resolved, the 51 zero-scored countries should be treated as
+> unscored rather than as low-risk**, and no ranking or map should present them
+> as the safest countries in the index. Any fix is a modelling decision rather
+> than a bug fix -- a small epsilon floor on domain scores, treating a genuine
+> zero as missing and dropping it from the phase mean, or replacing the
+> within-phase geometric mean with an arithmetic one -- and each changes every
+> published figure. The choice is deferred rather than made here.
+
 11.1 It measures conditions, not cases. The index does not estimate prevalence
 and cannot be read as a count of victims.
 
